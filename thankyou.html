@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PriceWatch Pro — Your License Key</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #faf7f2; color: #1a1a1a; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #fff; border: 1px solid #e8e0d4; border-radius: 16px; padding: 32px; max-width: 480px; width: 90%; box-shadow: 0 8px 30px rgba(0,0,0,0.08); text-align: center; }
+    .logo { font-size: 48px; margin-bottom: 8px; }
+    h1 { font-size: 22px; margin-bottom: 4px; color: #0d9488; }
+    .sub { color: #8a8078; font-size: 14px; margin-bottom: 24px; }
+    label { display: block; text-align: left; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #8a8078; }
+    input { width: 100%; padding: 12px 14px; border: 1px solid #e8e0d4; border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 16px; }
+    input:focus { border-color: #0d9488; box-shadow: 0 0 0 3px rgba(13,148,136,0.15); }
+    button { width: 100%; padding: 12px; background: #0d9488; color: #fff; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+    button:hover { background: #0f766e; }
+    .result { display: none; margin-top: 20px; text-align: left; }
+    .key-box { background: #f0ebe2; border: 2px dashed #0d9488; border-radius: 10px; padding: 16px; text-align: center; margin-bottom: 12px; }
+    .key-text { font-family: monospace; font-size: 18px; font-weight: 700; color: #0d9488; letter-spacing: 1px; word-break: break-all; }
+    .copy-btn { background: #0d9488; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 16px; }
+    .copy-btn:hover { background: #0f766e; }
+    .steps { text-align: left; font-size: 13px; line-height: 1.8; }
+    .steps li { margin-bottom: 4px; }
+    .error { color: #ef4444; font-size: 13px; margin-top: -10px; margin-bottom: 12px; display: none; }
+    .confetti { position: fixed; top: -10px; width: 8px; height: 8px; border-radius: 2px; pointer-events: none; animation: fall 2.5s ease-out forwards; }
+    @keyframes fall { 0% { opacity:1; transform: translateY(0) rotate(0deg); } 100% { opacity:0; transform: translateY(100vh) rotate(720deg); } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">&#128081;</div>
+    <h1>PriceWatch Pro</h1>
+    <p class="sub">Thank you for your purchase! Get your license key below.</p>
+
+    <div id="step-email">
+      <label for="email">Enter the email you paid with:</label>
+      <input type="email" id="email" placeholder="your@email.com" autocomplete="email">
+      <p class="error" id="error"></p>
+      <button onclick="generateKey()">Get My License Key</button>
+    </div>
+
+    <div class="result" id="result">
+      <div class="key-box">
+        <div class="key-text" id="key-display"></div>
+      </div>
+      <div style="text-align:center;">
+        <button class="copy-btn" onclick="copyKey()">&#128203; Copy Key</button>
+      </div>
+      <ol class="steps">
+        <li>Copy the license key above</li>
+        <li>Open PriceWatch extension popup</li>
+        <li>Click "Upgrade to Pro"</li>
+        <li>Paste the key and click "Activate"</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    var SECRET = 'pricewatch2025pro';
+
+    function computeChecksum(str) {
+      var hash = 0;
+      for (var i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0;
+      }
+      var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      var result = '';
+      var h = Math.abs(hash);
+      for (var j = 0; j < 8; j++) {
+        result += chars[h % chars.length];
+        h = Math.floor(h / chars.length) + (j * 7);
+      }
+      return result;
+    }
+
+    function generateKeyFromEmail(email) {
+      var normalized = email.trim().toLowerCase();
+      var seed = normalized;
+      var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      var hash = 0;
+      for (var i = 0; i < seed.length; i++) {
+        hash = ((hash << 5) - hash + seed.charCodeAt(i)) | 0;
+      }
+      var seedStr = '';
+      var h2 = Math.abs(hash);
+      for (var j = 0; j < 8; j++) {
+        seedStr += chars[h2 % chars.length];
+        h2 = Math.floor(h2 / chars.length) + (j * 13);
+      }
+
+      var g1 = seedStr.slice(0, 4);
+      var g2 = seedStr.slice(4, 8);
+      var check = computeChecksum(seedStr + SECRET);
+      var g3 = check.slice(0, 4);
+      var g4 = check.slice(4, 8);
+      return 'PW-' + g1 + '-' + g2 + '-' + g3 + '-' + g4;
+    }
+
+    function generateKey() {
+      var email = document.getElementById('email').value.trim();
+      var errorEl = document.getElementById('error');
+      errorEl.style.display = 'none';
+
+      if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+        errorEl.textContent = 'Please enter a valid email address';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      var key = generateKeyFromEmail(email);
+      document.getElementById('key-display').textContent = key;
+      document.getElementById('step-email').style.display = 'none';
+      document.getElementById('result').style.display = 'block';
+
+      var colors = ['#0d9488', '#f59e0b', '#ef4444', '#3b82f6', '#16a34a', '#8b5cf6'];
+      for (var i = 0; i < 40; i++) {
+        var c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = Math.random() * 100 + '%';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDelay = (Math.random() * 0.8) + 's';
+        c.style.animationDuration = (1.5 + Math.random() * 1.5) + 's';
+        document.body.appendChild(c);
+        (function(el) { setTimeout(function() { el.remove(); }, 3500); })(c);
+      }
+    }
+
+    function copyKey() {
+      var key = document.getElementById('key-display').textContent;
+      navigator.clipboard.writeText(key).then(function() {
+        var btn = document.querySelector('.copy-btn');
+        btn.textContent = '\u2705 Copied!';
+        setTimeout(function() { btn.textContent = '\uD83D\uDCCB Copy Key'; }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
